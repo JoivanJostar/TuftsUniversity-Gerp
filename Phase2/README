@@ -1,0 +1,75 @@
+A. Title & author
+
+    Title:gerp
+    authors:
+
+B. Purpose
+
+    The purpose of this project is to implement the GREP command in LINUX, index and search subdirectories in the file tree of the input directory, search the specified string in the file, and finally output to the specified output file.
+        
+C. Acknowledgements
+
+D. Files 
+
+    main.cpp:Gerp main driver, it has a main() function
+    DirNode.h:Directory node in a FSTree
+    FSTree.h:File System tree for a directory
+    stringProcessing.cpp:string manipulation functions
+    stringProcessing.h:header file for stringProcessing.cpp
+    Gerp.cpp:Iterate through the directory to create a file tree. Each word in the tree is then inserted into the HashTable, allowing the user to query for specific words.
+    Gerp.h:Header file for Gerp.cpp
+    HashTable.cpp:The implementation of hash table , table entrys which has the same index in table are linked in a chain.
+    HashTable.h:Header file for HashTable.cpp
+    unit_tests.h :the unit test file for this phase
+
+E. Compile & Run
+
+    Compile:make
+    Run:./gerp DirectoryToIndex OutputFile
+
+F.  architectural overview
+
+    HashTable is a linked-based HashTable. Gerp instantiates a hash table into which all files in FSTree are inserted. Each node in the HashTable is called "Entry" type, and
+    entrys with the same index in table are linked in a chain 
+    Once all the words in the FSTree have been inserted into the HashTable and indexed, the user can query the words based on the search function in the HashTable.
+
+G. Data Structures & Algorithms used
+
+    I use hash tables as the primary data structure for Gerp. A hash table is a structure that maps keys to values. In a well-dimensional hash table, the average cost per lookup is independent of the number of elements stored in the table. Therefore, if we try to query a string in a large table, the efficiency is O(1). I used the chaining method to handle collisions that occur when a string is hashed into a hash table.
+    Here I add a member to entry called "hash", this member stores the hash value of this entry's key, it is useful when expand the table and re-hash. Since the re-hash needs to change all of the entry's position in new table, and the "hash" member can speed up this step:We needn't to compute the hash again when re-hash.
+
+H. Testing
+
+I test the std::string stripNonAlphaNum(std::string input); in these test case:
+1. pass a normal string  "$#%Alice#" to it, the expected result is "Alice"
+2. pass a string with non-alphanum only  at the end. like "Alice#"
+3. pass a string with non-alphanum only  at the beginning like "#Alice"
+4. pass a string with no non-alphanum .like "Comp15"
+5. pass a string with all non-alphanum .like "###@@@@".
+    the expected result is empty string "".
+6. pass an empty string "", the expected result is also an empty string "".
+7. pass a words contains non alphanumeric characters in the middle. 
+    the word is "comp&!$15", expected is "comp&!$15";
+
+I test the toLowercase function in these case:
+1. pass a normal string  "AAAvvCC" to it, the expected result is "aaavvcc"
+2. pass a string with non-alpha characters "213AAc",the expected result is "213aac"
+3. pass an empty string to it.
+
+and then I test the split function, check if it could split a line string correctly
+
+I test the interface of hashtable in these case:
+1. firstly create an empty table.
+2. test insert and get of hashtable
+3. test get a NULL entry from table
+4. test the expand of table, test if it could grow up when reaches the load factor
+
+I test the gerp in this way:
+
+run the program, and then 
+1. try to query a word that dose not occur.
+2. query a word only occurs insensitively
+3. query a word with some non-alphanumber characters at the begin and end.
+4. test the @i command
+5. test the @f command to change the output file
+6. test the @q command.
